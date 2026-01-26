@@ -19,6 +19,12 @@ class Category:
         Category.category_count += 1
         Category.product_count += len(self.__products)
 
+    def __str__(self) -> str:
+        total_quantity = 0
+        for product in self.__products:
+            total_quantity += product.quantity
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
+
     def add_product(self, product: Product) -> None:
         """Метод для добавления товара в категорию."""
 
@@ -31,6 +37,6 @@ class Category:
 
         result = ""
         for product in self.__products:
-            # Шаблон: "Название продукта, X руб. Остаток: X шт.\n"
-            result += f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n"
+            # Шаблон теперь прописан в классе Product в методе __str__
+            result += str(product) + "\n"
         return result

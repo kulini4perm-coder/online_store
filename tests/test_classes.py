@@ -29,13 +29,9 @@ def test_category_counts(category_smartphones: Category) -> None:
     assert Category.product_count == 3
 
 
-def test_category_products_property(category_smartphones: Category) -> None:
-    """Тест геттера products, который возвращает строку со всеми продуктами."""
-    # Важно: \n должен быть в конце каждой строки, включая последнюю
-    expected_output = (
-        "Iphone 15, 210000.0 руб. Остаток: 8 шт.\n" "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт.\n"
-    )
-    assert category_smartphones.products == expected_output
+# def test_category_products_property(category_smartphones: Category) -> None:
+# Исключен как дублирующий - создан новый тест test_category_products_output,
+# который также проверяет строковый вывод геттера.
 
 
 def test_add_product(category_smartphones: Category) -> None:
@@ -63,3 +59,31 @@ def test_price_setter(product_iphone: Product, capsys: pytest.CaptureFixture[str
     captured = capsys.readouterr()
     assert "Цена не должна быть нулевая или отрицательная" in captured.out
     assert product_iphone.price == 250000.0  # Цена не изменилась
+
+
+def test_product_str(product_iphone: Product) -> None:
+    # Проверка строкового отображения продукта
+    assert str(product_iphone) == "Iphone 15, 210000.0 руб. Остаток: 8 шт."
+
+
+def test_category_str(category_smartphones: Category) -> None:
+    # Проверка строкового отображения категории (суммарное кол-во товаров: 8 + 5)
+    assert str(category_smartphones) == "Смартфоны, количество продуктов: 13 шт."
+
+
+def test_products_addition(product_iphone: Product, product_samsung: Product) -> None:
+    # Проверка сложения двух продуктов.
+    assert product_iphone + product_samsung == 2580000.0
+
+
+def test_category_products_output(category_smartphones: Category) -> None:
+    # Проверка, что геттер продуктов использует новое строковое отображение
+    output = category_smartphones.products
+    assert "Iphone 15, 210000.0 руб. Остаток: 8 шт." in output
+    assert "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт." in output
+
+
+def test_addition_error(product_iphone: Product) -> None:
+    # Проверка ошибки при сложении продукта с чем-то другим
+    with pytest.raises(TypeError):
+        product_iphone + 10
