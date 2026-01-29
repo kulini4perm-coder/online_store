@@ -19,10 +19,9 @@ class Product:
         return f"{self.name}, {self.__price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other: Any) -> float:
-        if isinstance(other, Product):
-            # (Цена1 * Кол-во1) + (Цена2 * Кол-во2)
-            return (self.price * self.quantity) + (other.price * other.quantity)
-        raise TypeError("Складывать можно только объекты класса Product")
+        if type(self) is not type(other):
+            raise TypeError("Нельзя складывать товары разных типов!")
+        return float((self.price * self.quantity) + (other.price * other.quantity))
 
     @classmethod
     def new_product(cls, product_data: dict) -> Self:
