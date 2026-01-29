@@ -2,6 +2,7 @@ import pytest
 
 from src.category import Category
 from src.product import Product
+from src.smartphone import Smartphone
 
 
 def test_product_init(product_iphone: Product) -> None:
@@ -87,3 +88,24 @@ def test_addition_error(product_iphone: Product) -> None:
     # Проверка ошибки при сложении продукта с чем-то другим
     with pytest.raises(TypeError):
         product_iphone + 10
+
+
+def test_addition_different_classes(product_iphone: Product, grass_elite: Product) -> None:
+    # Проверка, что нельзя сложить смартфон и траву
+    with pytest.raises(TypeError):
+        product_iphone + grass_elite
+
+
+def test_add_invalid_product(category_smartphones: Category) -> None:
+    # Проверка, что в категорию нельзя добавить не Product
+    with pytest.raises(TypeError):
+        category_smartphones.add_product("Это не продукт, а строка")  # type: ignore
+
+    with pytest.raises(TypeError):
+        category_smartphones.add_product(12345)  # type: ignore
+
+
+def test_smartphone_specific_attributes(smartphone_iphone_15: Smartphone) -> None:
+    # Проверяем, что данные Smartphone не теряются при инициализации
+    assert smartphone_iphone_15.model == "15"
+    assert smartphone_iphone_15.memory == 512
