@@ -1,5 +1,7 @@
 import pytest
+from _pytest.capture import CaptureFixture
 
+from src.base_product import BaseProduct
 from src.category import Category
 from src.product import Product
 from src.smartphone import Smartphone
@@ -109,3 +111,41 @@ def test_smartphone_specific_attributes(smartphone_iphone_15: Smartphone) -> Non
     # Проверяем, что данные Smartphone не теряются при инициализации
     assert smartphone_iphone_15.model == "15"
     assert smartphone_iphone_15.memory == 512
+
+
+# Тесты по абстрактному классу и миксину
+
+
+def test_base_product_abstraction() -> None:
+    # Проверка, что нельзя создать объект абстрактного класса
+    with pytest.raises(TypeError):
+        BaseProduct("Test", "Test", 100, 1)  # type: ignore
+
+
+def test_mixin_log_product(capsys: CaptureFixture) -> None:
+    # Проверка, что миксин печатает инфо при создании Product
+    Product("Samsung", "Android", 1000.0, 5)
+    captured = capsys.readouterr()
+    assert "Product('Samsung', 'Android', 1000.0, 5)" in captured.out
+
+
+def test_mixin_log_smartphone(capsys: CaptureFixture) -> None:
+    # Проверка, что миксин корректно определяет имя дочернего класса
+    Smartphone("iPhone", "iOS", 120000.0, 3, 100, "15 Pro", 256, "Titanium")
+    captured = capsys.readouterr()
+    # Проверяем, что в логе именно Smartphone
+    assert "Smartphone('iPhone', 'iOS', 120000.0, 3)" in captured.out
+
+
+def test_product_inheritance_functionality() -> None:
+    # Проверка, что после добавления миксина атрибуты на месте
+    prod = Product("Test", "Desc", 100.0, 10)
+    assert prod.name == "Test"
+    assert prod.price == 100.0
+    assert prod.quantity == 10
+
+
+def test_smartphone_inheritance(smartphone_iphone_15: Smartphone) -> None:
+    # Проверка корректности работы цепочки super() у наследников.
+    assert smartphone_iphone_15.name == "Iphone 15"
+    assert smartphone_iphone_15.price == 210000.0
