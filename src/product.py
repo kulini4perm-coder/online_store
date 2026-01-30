@@ -1,7 +1,9 @@
 from typing import Any, Self
 
+from src.base_product import BaseMixin, BaseProduct
 
-class Product:
+
+class Product(BaseMixin, BaseProduct):
     """Класс, представляющий товары."""
 
     name: str
@@ -14,6 +16,12 @@ class Product:
         self.description = description
         self.__price = price
         self.quantity = quantity
+        super().__init__(name, description, price, quantity)
+
+    def __repr__(self) -> str:
+        """Реализация repr для корректного отображения состояния объекта."""
+
+        return f"{self.__class__.__name__}('{self.name}', '{self.description}', {self.__price}, {self.quantity})"
 
     def __str__(self) -> str:
         return f"{self.name}, {self.__price} руб. Остаток: {self.quantity} шт."
