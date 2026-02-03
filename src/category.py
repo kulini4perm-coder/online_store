@@ -33,6 +33,15 @@ class Category:
         self.__products.append(product)
         Category.product_count += 1  # При добавлении увеличиваем счетчик
 
+    def middle_price(self) -> float:
+        """Метод для подсчета среднего ценника всех товаров."""
+        try:
+            total_price = sum([product.price for product in self.__products])
+            avg_price = total_price / len(self.__products)
+            return avg_price
+        except ZeroDivisionError:
+            return 0  # Если список товаров пуст, возвращаем 0
+
     @property
     def products(self) -> str:
         """Геттер, который возвращает строку со всеми продуктами по шаблону"""

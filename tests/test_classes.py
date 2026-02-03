@@ -149,3 +149,28 @@ def test_smartphone_inheritance(smartphone_iphone_15: Smartphone) -> None:
     # Проверка корректности работы цепочки super() у наследников.
     assert smartphone_iphone_15.name == "Iphone 15"
     assert smartphone_iphone_15.price == 210000.0
+
+
+# Тесты по исключениям
+
+
+def test_product_init_zero_quantity() -> None:
+    # Тест на выбрасывание исключения при нулевом количестве товара
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product("Iphone", "512GB, Gray space", 100.0, 0)
+
+
+def test_category_middle_price_normal() -> None:
+    # Тест средней цены при наличии товаров
+    p1 = Product("Samsung", "256GB, Серый цвет, 200MP камера", 100.0, 5)
+    p2 = Product("Iphone", "512GB, Gray space", 200.0, 10)
+    category = Category("Смартфоны", "Категория смартфонов", [p1, p2])
+
+    # (100 + 200) / 2 = 150.0
+    assert category.middle_price() == 150.0
+
+
+def test_category_middle_price_empty() -> None:
+    # Тест средней цены для пустой категории (обработка ZeroDivisionError)
+    category = Category("Пустая", "Описание", [])
+    assert category.middle_price() == 0
